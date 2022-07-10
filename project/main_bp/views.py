@@ -19,6 +19,25 @@ def page_index():
     user_likes = Repository().get_user_likes(user_id)
     return render_template('index.html', posts=all_posts, bookmarks=user_bookmarks, likes=user_likes)
 
+@main_blueprint.get('/search')
+def page_search():
+    if not UserIDentifier().is_user_registered(request):
+        return redirect(url_for('reg_blueprint.page_reg'), code=302)
+
+    user_id = UserIDentifier().get_user_id(request)
+    user_bookmarks = Repository().get_user_bookmarks(user_id)
+    user_likes = Repository().get_user_likes(user_id)
+
+    search_line = request.args.get('search_line')
+
+    posts_by_search_line = Repository().get_post_by_search_line(search_line)
+
+
+    return render_template('index.html', posts=posts_by_search_line, bookmarks=user_bookmarks, likes=user_likes, search=True)
+
+
+#actions
+
 @main_blueprint.post('/bookmark_action')
 def bookmark_action():
     post_id = int(request.values.get('post_id'))

@@ -12,7 +12,7 @@
 <body>
   <header class="container header">
     <div class="header__wrapper">
-      <a href="/project/static" class="header__logo-link">
+      <a href="{{ url_for('main_blueprint.page_index') }}" class="header__logo-link">
         <svg class="header__logo" width="177" height="26">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#skyprogram"></use>
         </svg>
@@ -21,6 +21,20 @@
         <img src="{{  url_for('static', filename='img/bookmark.png') }}" alt="" class="header__bookmark-icon" width="28">
         <span id="bookmarks_counter" class="header__bookmark-counter">{{ bookmarks|count }}</span>
       </a>
+    </div>
+
+    <div class="search">
+
+      <form action="{{ url_for('main_blueprint.page_search') }}" class="search__form">
+       <div class="row">
+        <input type="search" name="search_line" id="login" required>
+        <label for="login">Поиск</label>
+       </div>
+      </form>
+      {% if search %}
+        <p class="search__results">Найдено постов: {{ posts|length }}</p>
+      {% endif %}
+
     </div>
   </header>
 
@@ -58,11 +72,9 @@
                 <img src="{{ url_for('static', filename='img/like_0.png') }}" post_id={{ post['pk'] }} alt="" class="item__like-icon" width="26">
                 {% endif %}
 
-
               </button>
-            <span class="item__counter-text" id="like_{{post['pk']}}" post_id="{{ post['pk'] }}">{{ post['likes_count'] }} </span>
 
-
+              <span class="item__counter-text" id="like_{{post['pk']}}" post_id="{{ post['pk'] }}">{{ post['likes_count'] }}</span>
             </div>
           </div>
           <div class="item__post-bottom">

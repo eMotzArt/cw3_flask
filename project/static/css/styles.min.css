@@ -523,4 +523,47 @@ textarea {
 }
 
 
+/*____*/
+/*Для поля поиска*/
+/*____*/
+
+.search {
+	padding-bottom: 28px;
+	margin-bottom: 28px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.25)
+}
+.search__form {
+	background: #f5f5f5; /* Цвет фона */
+    margin: auto; /* Выравниваем по центру */
+    padding: 5px; /* Поля вокруг текста */
+}
+
+.row input {
+    width: 100%; /* Ширина поля */
+    box-sizing: border-box; /* Ширина не учитывает padding */
+    padding: 0.5rem 0; /* Поля вокруг текста */
+    border: none; /* Убираем рамку */
+    border-bottom: 1px solid #ccc; /* Линия снизу */
+    background: transparent; /* Прозрачный фон */
+   }
+   .row input:focus {
+    outline: none; /* Убираем контур */
+    border-color: #1976D2; /* Синяя линия снизу */
+   }
+   .row label {
+    display: block; /* Блочный элемент */
+    color: #aaa; /* Цвет подсказки */
+    transform: translateY(-1.5rem); /* Сдвигаем вверх */
+    line-height: 1rem; /* Межстрочный интервал */
+    transition: 0.5s; /* Время трансформации */
+   }
+   .row input:focus + label,
+   .row input:hover + label,
+   .row input:valid + label {
+    font-size: 10px; /* Размер шрифта */
+    transform: translateY(-2.5rem); /* Сдвигаем вверх */
+   }
+
+
 /*# sourceMappingURL=styles.min.css.map */
+
