@@ -216,6 +216,15 @@ class Repository:
         with open(self.posts_file, 'w') as file:
             json.dump(all_posts, file, ensure_ascii=False, indent=4)
 
+    def set_views_counter(self, post_id):
+        all_posts: list = self.get_all_posts()
+        for index, post in enumerate(all_posts):
+            if post['pk'] == post_id:
+                all_posts[index]['views_count'] = all_posts[index]['views_count']+1
+                break
+        with open(self.posts_file, 'w') as file:
+            json.dump(all_posts, file, ensure_ascii=False, indent=4)
+
 
 
 

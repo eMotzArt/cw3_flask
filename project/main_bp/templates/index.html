@@ -44,14 +44,14 @@
       {% for post in posts %}
         <div class="items__item item">
           <div class="item__top">
-            <a href="/project/user-feed.html" class="item__head">
+            <a href="{{ url_for('main_blueprint.page_user', user_name=post['poster_name']) }}" class="item__head">
               <div class="item__ava-wrap">
                 <img src="{{ post['poster_avatar'] }}" alt="" class="item__ava" width="47">
               </div>
               <span class="item__username">{{ post['poster_name'] }}</span>
             </a>
           </div>
-          <a href="/project/post.htmlst.html" class="item__post-link">
+          <a href="{{ url_for('main_blueprint.page_post', post_id=post['pk']) }}" class="item__post-link">
             <img src="{{ post['pic'] }}" alt="" width="348" class="item__post-img">
           </a>
           <p class="item__hashtags">
@@ -78,7 +78,7 @@
             </div>
           </div>
           <div class="item__post-bottom">
-            <a href="/project/post.htmlst.html" class="item__btn-more">Подробнее</a>
+            <a href="{{ url_for('main_blueprint.page_post', post_id=post['pk']) }}" class="item__btn-more">Подробнее</a>
             <button type="submit" class="item__bookmark-btn">
               {% if post['pk'] in bookmarks %}
                 <img src="{{ url_for('static', filename='img/bookmark_1.png') }}" post_id={{ post['pk'] }} alt="" class="item__bookmark-icon" width="24">

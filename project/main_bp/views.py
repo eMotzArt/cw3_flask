@@ -35,8 +35,34 @@ def page_search():
 
     return render_template('index.html', posts=posts_by_search_line, bookmarks=user_bookmarks, likes=user_likes, search=True)
 
+@main_blueprint.get('/post/<int:post_id>')
+def page_post(post_id):
+    if not UserIDentifier().is_user_registered(request):
+        return redirect(url_for('reg_blueprint.page_reg'), code=302)
+    Repository().set_views_counter(post_id)
+    user_id = UserIDentifier().get_user_id(request)
+    user_bookmarks = Repository().get_user_bookmarks(user_id)
+    user_likes = Repository().get_user_likes(user_id)
+
+    post_by_id = Repository().get_post_by_id(post_id)
+    comments_by_post_id = Repository().get_comments_by_post_id(post_id)
+    return render_template('post.html', post=post_by_id, likes=user_likes, bookmarks=user_bookmarks, comments=comments_by_post_id)
+    pass
+
+@main_blueprint.get('/user/<user_name>')
+def page_user(user_name):
+    x=1
+    pass
+    ...
+
 
 #actions
+@main_blueprint.post('/post/<int:post_id>/leavecomment')
+def comment_action(post_id):
+    comment = request.values.get('comment_content')
+    user_name = UserIDentifier().get_user_name(request)
+    Repository().add_comment(post_id, user_name, comment)
+    return redirect(url_for('main_blueprint.page_post', post_id=post_id), code=302)
 
 @main_blueprint.post('/bookmark_action')
 def bookmark_action():
