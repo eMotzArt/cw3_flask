@@ -17,6 +17,7 @@ class Repository:
     def __init__(self):
         self.posts_file = DATA_PATH_ABS.joinpath('data.json')
         self.bookmarks_file = DATA_PATH_ABS.joinpath('bookmarks.json')
+        self.likes_file = DATA_PATH_ABS.joinpath('likes.json')
         self.comments_file = DATA_PATH_ABS.joinpath('comments.json')
         self.users_file = DATA_PATH_ABS.joinpath('users.json')
 
@@ -146,15 +147,51 @@ class Repository:
 
         return founded_comments
 
-    def get_bookmarsk_count(self, user_id):
+    def get_user_bookmarks(self, user_id):
         with open(self.bookmarks_file) as file:
             all_bookmarks = json.load(file)
 
         user_bookmarks = all_bookmarks.get(user_id)
-        if user_bookmarks is None:
-            return 0
 
-        return len(user_bookmarks)
+        return user_bookmarks
+
+    def set_bookmark_state(self, user_id, post_id):
+        user_bookmarks: list = self.get_user_bookmarks(user_id)
+        if post_id in user_bookmarks:
+            user_bookmarks.remove(post_id)
+        else:
+            user_bookmarks.append(post_id)
+
+        with open(self.bookmarks_file) as file:
+            all_bookmarks = json.load(file)
+
+        all_bookmarks[user_id] = user_bookmarks
+
+        with open(self.bookmarks_file, 'w') as file:
+            json.dump(all_bookmarks, file, ensure_ascii=False, indent=4)
+
+    def get_user_likes(self, user_id):
+        with open(self.likes_file) as file:
+            all_likes = json.load(file)
+
+        user_likes = all_likes.get(user_id)
+
+        return user_likes
+
+    def change_user_like_state(self, user_id, post_id):
+        user_likes: list = self.get_user_likes(user_id)
+        if post_id in user_likes:
+            user_likes.remove(post_id)
+        else:
+            user_likes.append(post_id)
+
+        with open(self.likes_file) as file:
+            all_likes = json.load(file)
+
+        all_likes[user_id] = user_likes
+
+        with open(self.likes_file, 'w') as file:
+            json.dump(all_likes, file, ensure_ascii=False, indent=4)
 
     #users
     def get_all_users(self):
@@ -170,6 +207,16 @@ class Repository:
         with open(self.users_file, 'w') as users_file:
             json.dump(users, users_file, ensure_ascii=False, indent=4)
 
+    def set_post_likes_counter(self, post_id, accent):
+        all_posts: list = self.get_all_posts()
+        for index, post in enumerate(all_posts):
+            if post['pk']==post_id:
+                all_posts[index]['likes_count'] = all_posts[index]['likes_count']+accent
+                break
+        with open(self.posts_file, 'w') as file:
+            json.dump(all_posts, file, ensure_ascii=False, indent=4)
+
+
 
 
 class UserIDentifier:
@@ -181,6 +228,8 @@ class UserIDentifier:
 
     def __init__(self):
         self.users_data_file_path = DATA_PATH_ABS.joinpath('users.json')
+        self.bookmarks_data_file_path = DATA_PATH_ABS.joinpath('bookmarks.json')
+        self.likes_data_file_path = DATA_PATH_ABS.joinpath('likes.json')
         self.all_registered_users: dict = self.get_all_registered_users()
 
     def is_user_registered(self, request):
@@ -231,7 +280,9 @@ class UserIDentifier:
 
         #сохранили файл с именем файла = хеш пользователя
         self.save_new_user_avatar(new_user_id, reg_avatar)
-        #сохранили информацию о зарегистрированном пользователе
+        #добавили пользователя в закладки и лайки
+        self.add_user_to_bookmarks(new_user_id)
+        self.add_user_to_likes(new_user_id)
 
         print(f"New User ID generated: {new_user_id}")
 
@@ -244,3 +295,21 @@ class UserIDentifier:
         user_unique_str = f"{user_browser_agent}__{user_ip_adress_sum}"
         unique_id = hashlib.md5(user_unique_str.encode('utf-8')).hexdigest()
         return unique_id
+
+    def add_user_to_bookmarks(self, new_user_id):
+        with open(self.bookmarks_data_file_path) as file:
+            all_bookmarks: dict = json.load(file)
+
+        all_bookmarks.update({new_user_id:[]})
+
+        with open(self.bookmarks_data_file_path, 'w') as file:
+            json.dump(all_bookmarks, file, ensure_ascii=False, indent=4)
+
+    def add_user_to_likes(self, new_user_id):
+        with open(self.likes_data_file_path) as file:
+            all_likes: dict = json.load(file)
+
+        all_likes.update({new_user_id:[]})
+
+        with open(self.likes_data_file_path, 'w') as file:
+            json.dump(all_likes, file, ensure_ascii=False, indent=4)

@@ -390,6 +390,11 @@ textarea {
 	padding-bottom: 3px
 }
 
+.item__like-icon {
+	width: 26px;
+	padding-bottom: 3px
+}
+
 .item__counter-text {
 	padding-left: 11px;
 	color: rgba(0, 0, 0, 0.45)
@@ -427,6 +432,15 @@ textarea {
 	opacity: 0.2;
 	-webkit-transition: all 0.5s linear;
 	transition: all 0.5s linear
+}
+
+.item__like-btn {
+	padding: 0;
+	padding-top: 6px;
+	border: none;
+	outline: none;
+	background: none;
+	box-shadow: none;
 }
 
 .item__bookmark-btn.active,

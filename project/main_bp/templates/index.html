@@ -7,7 +7,6 @@
   <title>SKYPROGRAM</title>
   <link href="{{ url_for('static', filename='css/styles.min.css') }}" rel="stylesheet">
   <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
-{#  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js></script>#}
 </head>
 
 <body>
@@ -18,9 +17,9 @@
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#skyprogram"></use>
         </svg>
       </a>
-      <a href="/project/bookmarks.htmlks.html" class="header__bookmark-btn">
-        <img src="../../static/img/bookmark.png" alt="" class="header__bookmark-icon" width="28">
-        <span class="header__bookmark-counter">3</span>
+      <a href="/" class="header__bookmark-btn">
+        <img src="{{  url_for('static', filename='img/bookmark.png') }}" alt="" class="header__bookmark-icon" width="28">
+        <span id="bookmarks_counter" class="header__bookmark-counter">{{ bookmarks|count }}</span>
       </a>
     </div>
   </header>
@@ -51,14 +50,29 @@
             <div class="item__counter">
               <img src="{{ url_for('static', filename='img/eye.png')}}" alt="" class="item__counter-icon" width="26">
               <span class="item__counter-text">{{ post['views_count'] }}</span>
-              <img src="{{ url_for('static', filename='img/like_0.png') }}" alt="" class="item__counter-icon" width="26">
-              <span class="item__counter-text">{{ post['likes_count'] }}</span>
+              <button type="submit" class="item__like-btn">
+
+                {% if post['pk'] in likes %}
+                <img src="{{ url_for('static', filename='img/like_1.png') }}"  post_id={{ post['pk'] }} alt="" class="item__like-icon" width="26">
+                {% else %}
+                <img src="{{ url_for('static', filename='img/like_0.png') }}" post_id={{ post['pk'] }} alt="" class="item__like-icon" width="26">
+                {% endif %}
+
+
+              </button>
+            <span class="item__counter-text" id="like_{{post['pk']}}" post_id="{{ post['pk'] }}">{{ post['likes_count'] }} </span>
+
+
             </div>
           </div>
           <div class="item__post-bottom">
             <a href="/project/post.htmlst.html" class="item__btn-more">Подробнее</a>
             <button type="submit" class="item__bookmark-btn">
-              <img src="{{ url_for('static', filename='img/bookmark_0.png') }}" post_id={{ post['pk'] }} alt="" class="item__bookmark-icon" width="24">
+              {% if post['pk'] in bookmarks %}
+                <img src="{{ url_for('static', filename='img/bookmark_1.png') }}" post_id={{ post['pk'] }} alt="" class="item__bookmark-icon" width="24">
+              {% else %}
+                <img src="{{ url_for('static', filename='img/bookmark_0.png') }}" post_id={{ post['pk'] }} alt="" class="item__bookmark-icon" width="24">
+              {% endif %}
             </button>
           </div>
         </div>
@@ -77,21 +91,56 @@
           $('.item__bookmark-icon').click(function () {
               let image = $(this);
               let postId = image.attr('post_id');
-              let parent_button = image.parent('button');
+              let bookmarks_counter = document.getElementById('bookmarks_counter')
+
               $.ajax({
                   type: "POST",
-                  url: "{{ url_for('main_blueprint.get_like') }}",
+                  url: "{{ url_for('main_blueprint.bookmark_action') }}",
                   data: {
                       post_id: postId
                   },
                   success: function (data) {
                       let status = data['status'];
-                      if (status == 'like') {
+                      if (status == 'on') {
+                          bookmarks_counter.textContent = parseInt(bookmarks_counter.textContent, 10)+1
                           console.log(status);
                           image.attr('src', '{{ url_for('static', filename='img/bookmark_1.png') }}');
-                      } else if (status == 'dislike'){
+                      } else if (status == 'off'){
+                          bookmarks_counter.textContent = parseInt(bookmarks_counter.textContent, 10)-1
                           console.log(status);
                           image.attr('src', '{{ url_for('static', filename='img/bookmark_0.png') }}')
+                      }
+                  }
+              });
+          })
+      });
+  </script>
+
+  #like_click
+  <script>
+      $(document).ready(function () {
+          $('.item__like-icon').click(function () {
+              let image = $(this);
+              let postId = image.attr('post_id');
+              let likesCounterId = String('like_'+postId)
+              let likesCounter = document.getElementById(likesCounterId)
+              $.ajax({
+                  type: "POST",
+                  url: "{{ url_for('main_blueprint.like_action') }}",
+                  data: {
+                      post_id: postId
+                  },
+                  success: function (data) {
+                      let status = data['status'];
+                      let likes = data['likes'];
+                      if (status == 'like') {
+                          console.log(status);
+                          likesCounter.textContent = parseInt(likesCounter.textContent, 10)+1
+                          image.attr('src', '{{ url_for('static', filename='img/like_1.png') }}');
+                      } else if (status == 'dislike'){
+                          console.log(status);
+                          likesCounter.textContent = parseInt(likesCounter.textContent, 10)-1
+                          image.attr('src', '{{ url_for('static', filename='img/like_0.png') }}')
                       }
                   }
               });
