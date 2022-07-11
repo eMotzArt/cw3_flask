@@ -2,7 +2,7 @@ import pathlib
 
 # абсолютные пути
 ROOT_PATH_ABS = pathlib.Path(__file__).resolve().parent.parent
-# PROJECT_PATH_ABS = ROOT_PATH_ABS.joinpath('project')
+PROJECT_PATH_ABS = ROOT_PATH_ABS.joinpath('project')
 TEMPLATES_PATH_ABS = ROOT_PATH_ABS.joinpath('project', 'templates')
 STATIC_PATH_ABS = ROOT_PATH_ABS.joinpath('project', 'static')
 IMG_PATH_ABS = ROOT_PATH_ABS.joinpath('project', 'static', 'img')

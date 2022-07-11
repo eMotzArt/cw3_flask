@@ -51,10 +51,54 @@ def page_post(post_id):
 
 @main_blueprint.get('/user/<user_name>')
 def page_user(user_name):
-    x=1
-    pass
-    ...
+    if not UserIDentifier().is_user_registered(request):
+        return redirect(url_for('reg_blueprint.page_reg'), code=302)
 
+    user_id = UserIDentifier().get_user_id(request)
+    user_bookmarks = Repository().get_user_bookmarks(user_id)
+    user_likes = Repository().get_user_likes(user_id)
+
+    posts_by_user = Repository().get_post_by_user_name(user_name)
+
+    return render_template('user-feed.html', user_name=user_name, posts=posts_by_user, likes=user_likes, bookmarks=user_bookmarks)
+
+@main_blueprint.get('/tag/<tag_name>')
+def page_tag(tag_name):
+    if not UserIDentifier().is_user_registered(request):
+        return redirect(url_for('reg_blueprint.page_reg'), code=302)
+
+    user_id = UserIDentifier().get_user_id(request)
+    user_bookmarks = Repository().get_user_bookmarks(user_id)
+    user_likes = Repository().get_user_likes(user_id)
+
+    posts_by_tag = Repository().get_post_by_tag(tag_name)
+    return render_template('tag.html', tag_name=tag_name, posts=posts_by_tag, likes=user_likes, bookmarks=user_bookmarks)
+
+@main_blueprint.get('/bookmarks')
+def page_bookmarks():
+    if not UserIDentifier().is_user_registered(request):
+        return redirect(url_for('reg_blueprint.page_reg'), code=302)
+
+    user_id = UserIDentifier().get_user_id(request)
+    user_bookmarks = Repository().get_user_bookmarks(user_id)
+    user_likes = Repository().get_user_likes(user_id)
+
+    user_bookmarked_posts = Repository().get_post_by_user_bookmarks(user_bookmarks)
+    return render_template('bookmarks.html', posts=user_bookmarked_posts, likes=user_likes, bookmarks=user_bookmarks)
+
+@main_blueprint.get('/add_post')
+@main_blueprint.post('/add_post')
+def add_post():
+    if request.method=='GET':
+        return render_template('add_post.html')
+
+    post_image = request.files.get('post_image')
+    post_content = request.values.get('post_content')
+    user_id = UserIDentifier().get_user_id(request)
+    user_name = UserIDentifier().get_user_name(request)
+    Repository().add_new_post(user_id, user_name, post_image, post_content)
+    return redirect(url_for('main_blueprint.page_index'))
+    pass
 
 #actions
 @main_blueprint.post('/post/<int:post_id>/leavecomment')

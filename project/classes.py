@@ -1,16 +1,10 @@
-from werkzeug.datastructures import FileStorage
-
-from project.globals import DATA_PATH_ABS
-
-
-import os
 import json
-import hashlib
 import re
-import shutil
 import operator
 
-from project.globals import DATA_PATH_ABS, IMG_PATH_ABS
+from werkzeug.datastructures import FileStorage
+
+from project.globals import DATA_PATH_ABS, IMG_PATH_ABS, PROJECT_PATH_ABS
 
 
 class Repository:
@@ -21,7 +15,7 @@ class Repository:
         self.comments_file = DATA_PATH_ABS.joinpath('comments.json')
         self.users_file = DATA_PATH_ABS.joinpath('users.json')
 
-    # posts
+    # get posts
 
     def get_all_posts(self):
         with open(self.posts_file) as posts_file:
@@ -225,6 +219,65 @@ class Repository:
         with open(self.posts_file, 'w') as file:
             json.dump(all_posts, file, ensure_ascii=False, indent=4)
 
+    def get_post_by_user_bookmarks(self, user_bookmarks):
+        all_posts = self.get_all_posts()
+        user_bookmarked_posts = []
+        for post in all_posts:
+            if post['pk']  in user_bookmarks:
+                user_bookmarked_posts.append(post)
+        return user_bookmarked_posts
+
+    def add_new_post(self, user_id, user_name, post_image, post_content: str):
+        all_posts = self.get_all_posts()
+        avatar_path = IMG_PATH_ABS.joinpath(user_id+'.jpeg') if IMG_PATH_ABS.joinpath(user_id+'.jpeg').exists() else IMG_PATH_ABS.joinpath(user_id+'.png')
+
+        file_name = post_image.filename
+        file_full_path = IMG_PATH_ABS.joinpath(file_name)
+        post_image.save(file_full_path)
+
+        all_posts_parsed = self.parse_post_hashtags(all_posts)
+        new_post = {
+        "poster_name": user_name,
+        "poster_avatar": '/'+str(avatar_path.relative_to(PROJECT_PATH_ABS)),
+        "pic": '/'+str(file_full_path.relative_to(PROJECT_PATH_ABS)),
+        "content": post_content.replace('\r\n', ' \r\n')+' ',
+        "views_count": 0,
+        "likes_count": 0,
+        "pk": len(all_posts)+1
+    }
+
+
+
+        # если нет хештегов - добавляем ключ с пустым списком
+        if new_post['content'].count('#') == 0:
+            new_post['hashtags'] = []
+
+        # данный код выполнится в случае, если в тексте имеются хештеги
+
+        # вычисляются все хештеги в список (после каждого хештега присутствует пробел, это важно, не спрашивайте зачем)
+        hashtags = re.findall(r'(#\w+ )', new_post['content'])
+        # каждый хештег в тексте заменяется на ссылку
+
+        hashtags_links = []
+        for hashtag in hashtags:
+            hashtags_links.append(f"<a href='/tag/{hashtag[1:].strip()}'>{hashtag.strip()}</a>")
+            new_post['content'] = new_post['content'].replace(hashtag, f"<a href='/tag/{hashtag[1:].strip()}'>{hashtag.strip()}</a> ", 1)
+        # удаляем пробелы с концов хештегов для феншуя
+        hashtags = list(map(lambda x: x.strip(), hashtags))
+        # записываем хештеги и ссылки в ключи,
+        new_post['hashtags'] = hashtags
+        new_post['hashtags_links'] = hashtags_links
+
+
+
+
+
+            #######
+        all_posts.append(new_post)
+        with open(self.posts_file, 'w') as posts_file:
+            json.dump(all_posts, posts_file, ensure_ascii=False, indent=4)
+
+        pass
 
 
 
