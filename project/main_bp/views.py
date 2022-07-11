@@ -30,7 +30,7 @@ def page_search():
 
     search_line = request.args.get('search_line')
 
-    posts_by_search_line = Repository().get_post_by_search_line(search_line)
+    posts_by_search_line = Repository().get_posts_by_search_line(search_line)
 
 
     return render_template('index.html', posts=posts_by_search_line, bookmarks=user_bookmarks, likes=user_likes, search=True)
@@ -58,7 +58,7 @@ def page_user(user_name):
     user_bookmarks = Repository().get_user_bookmarks(user_id)
     user_likes = Repository().get_user_likes(user_id)
 
-    posts_by_user = Repository().get_post_by_user_name(user_name)
+    posts_by_user = Repository().get_posts_by_user_name(user_name)
 
     return render_template('user-feed.html', user_name=user_name, posts=posts_by_user, likes=user_likes, bookmarks=user_bookmarks)
 
@@ -71,7 +71,7 @@ def page_tag(tag_name):
     user_bookmarks = Repository().get_user_bookmarks(user_id)
     user_likes = Repository().get_user_likes(user_id)
 
-    posts_by_tag = Repository().get_post_by_tag(tag_name)
+    posts_by_tag = Repository().get_posts_by_tag(tag_name)
     return render_template('tag.html', tag_name=tag_name, posts=posts_by_tag, likes=user_likes, bookmarks=user_bookmarks)
 
 @main_blueprint.get('/bookmarks')
@@ -83,7 +83,7 @@ def page_bookmarks():
     user_bookmarks = Repository().get_user_bookmarks(user_id)
     user_likes = Repository().get_user_likes(user_id)
 
-    user_bookmarked_posts = Repository().get_post_by_user_bookmarks(user_bookmarks)
+    user_bookmarked_posts = Repository().get_posts_by_user_bookmarks(user_bookmarks)
     return render_template('bookmarks.html', posts=user_bookmarked_posts, likes=user_likes, bookmarks=user_bookmarks)
 
 @main_blueprint.get('/add_post')
@@ -105,7 +105,7 @@ def add_post():
 def comment_action(post_id):
     comment = request.values.get('comment_content')
     user_name = UserIDentifier().get_user_name(request)
-    Repository().add_comment(post_id, user_name, comment)
+    Repository().add_new_comment(post_id, user_name, comment)
     return redirect(url_for('main_blueprint.page_post', post_id=post_id), code=302)
 
 @main_blueprint.post('/bookmark_action')
@@ -127,7 +127,7 @@ def like_action():
     post_id = int(request.values.get('post_id'))
     user_id = UserIDentifier().get_user_id(request)
 
-    Repository().change_user_like_state(user_id, post_id)
+    Repository().set_user_like_state(user_id, post_id)
 
     user_likes = Repository().get_user_likes(user_id)
     if post_id in user_likes:
