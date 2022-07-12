@@ -42,7 +42,7 @@ class Repository:
         for post in all_posts:
             if search_line.lower() in post['content'].lower():
                 founded_posts.append(post)
-        return founded_posts
+        return founded_posts[:10]
 
     def get_posts_by_user_name(self, user_name: str) -> list[dict]:
         all_posts = self.get_all_posts()
