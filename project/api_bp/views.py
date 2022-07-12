@@ -1,8 +1,6 @@
 from flask import Blueprint, jsonify
 from project.globals import STATIC_PATH_ABS
 from project.classes import Repository
-# Включает в себя страницу регистрации и пост-метод
-
 
 api_blueprint = Blueprint('api_blueprint', __name__, template_folder='./templates', static_folder=STATIC_PATH_ABS)
 
