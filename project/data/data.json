@@ -83,43 +83,5 @@
         "likes_count": 76,
         "pk": 7,
         "hashtags": []
-    },
-    {
-        "poster_name": "John",
-        "poster_avatar": "/static/img/e32bdaa2fa17365ea94425e979d33f81.jpeg",
-        "pic": "/static/img/dog.jpeg",
-        "content": "<a href='/tag/dog'>#dog</a> самый лучший <a href='/tag/friend'>#friend</a> \r\n<a href='/tag/кот'>#кот</a> ",
-        "views_count": 1,
-        "likes_count": 0,
-        "pk": 8,
-        "hashtags": [
-            "#dog",
-            "#friend",
-            "#кот"
-        ],
-        "hashtags_links": [
-            "<a href='/tag/dog'>#dog</a>",
-            "<a href='/tag/friend'>#friend</a>",
-            "<a href='/tag/кот'>#кот</a>"
-        ]
-    },
-    {
-        "poster_name": "John",
-        "poster_avatar": "/static/img/e32bdaa2fa17365ea94425e979d33f81.jpeg",
-        "pic": "/static/img/dog.jpeg",
-        "content": "<a href='/tag/best'>#best</a> <a href='/tag/dog'>#dog</a> <a href='/tag/ever'>#ever</a> ",
-        "views_count": 0,
-        "likes_count": 0,
-        "pk": 9,
-        "hashtags": [
-            "#best",
-            "#dog",
-            "#ever"
-        ],
-        "hashtags_links": [
-            "<a href='/tag/best'>#best</a>",
-            "<a href='/tag/dog'>#dog</a>",
-            "<a href='/tag/ever'>#ever</a>"
-        ]
     }
 ]

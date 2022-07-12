@@ -24,18 +24,6 @@
         "pk": 4
     },
     {
-        "post_id": 1,
-        "commenter_name": "John",
-        "comment": "test",
-        "pk": 24
-    },
-    {
-        "post_id": 1,
-        "commenter_name": "John",
-        "comment": "fuck",
-        "pk": 25
-    },
-    {
         "post_id": 2,
         "commenter_name": "johnny",
         "comment": "Класс!",
@@ -120,34 +108,10 @@
         "pk": 18
     },
     {
-        "post_id": 5,
-        "commenter_name": "John",
-        "comment": "111222333",
-        "pk": 21
-    },
-    {
-        "post_id": 5,
-        "commenter_name": "John",
-        "comment": "WOWOWOW",
-        "pk": 22
-    },
-    {
-        "post_id": 5,
-        "commenter_name": "John",
-        "comment": "fuck yeah",
-        "pk": 26
-    },
-    {
         "post_id": 6,
         "commenter_name": "larry",
         "comment": "Класс!",
         "pk": 19
-    },
-    {
-        "post_id": 6,
-        "commenter_name": "John",
-        "comment": "Ваще ахуеть",
-        "pk": 23
     },
     {
         "post_id": 7,
