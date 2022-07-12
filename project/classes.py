@@ -1,7 +1,6 @@
 import json
 import re
 import operator
-
 from werkzeug.datastructures import FileStorage
 
 from project.globals import DATA_PATH_ABS, IMG_PATH_ABS, PROJECT_PATH_ABS

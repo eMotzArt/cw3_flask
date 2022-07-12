@@ -29,7 +29,6 @@ def page_search():
     user_likes = Repository().get_user_likes(user_id)
 
     search_line = request.args.get('search_line')
-
     posts_by_search_line = Repository().get_posts_by_search_line(search_line)
 
 
@@ -39,10 +38,12 @@ def page_search():
 def page_post(post_id):
     if not UserIDentifier().is_user_registered(request):
         return redirect(url_for('reg_blueprint.page_reg'), code=302)
-    Repository().set_views_counter(post_id)
+
     user_id = UserIDentifier().get_user_id(request)
     user_bookmarks = Repository().get_user_bookmarks(user_id)
     user_likes = Repository().get_user_likes(user_id)
+
+    Repository().set_views_counter(post_id)
 
     post_by_id = Repository().get_post_by_id(post_id)
     comments_by_post_id = Repository().get_comments_by_post_id(post_id)
@@ -86,10 +87,11 @@ def page_bookmarks():
     user_bookmarked_posts = Repository().get_posts_by_user_bookmarks(user_bookmarks)
     return render_template('bookmarks.html', posts=user_bookmarked_posts, likes=user_likes, bookmarks=user_bookmarks)
 
+#add post
 @main_blueprint.get('/add_post')
 @main_blueprint.post('/add_post')
 def add_post():
-    if request.method=='GET':
+    if request.method == 'GET':
         return render_template('add_post.html')
 
     post_image = request.files.get('post_image')
