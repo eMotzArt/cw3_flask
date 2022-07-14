@@ -12,4 +12,6 @@ def page_api_posts():
 @api_blueprint.get('/api/posts/<int:post_id>')
 def page_api_post(post_id):
     post = Repository().get_post_by_id(post_id)
+    if not post:
+        raise FileNotFoundError
     return jsonify(post)

@@ -48,7 +48,6 @@ def page_post(post_id):
     post_by_id = Repository().get_post_by_id(post_id)
     comments_by_post_id = Repository().get_comments_by_post_id(post_id)
     return render_template('post.html', post=post_by_id, likes=user_likes, bookmarks=user_bookmarks, comments=comments_by_post_id)
-    pass
 
 @main_blueprint.get('/user/<user_name>')
 def page_user(user_name):
@@ -118,6 +117,8 @@ def bookmark_action():
     Repository().set_bookmark_state(user_id, post_id)
 
     user_bookmarks = Repository().get_user_bookmarks(user_id)
+
+    return jsonify({'status': post_id in user_bookmarks})
 
     if post_id in user_bookmarks:
         return jsonify({'status': 'on'})

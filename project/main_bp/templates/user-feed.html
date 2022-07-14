@@ -99,10 +99,10 @@
                   },
                   success: function (data) {
                       let status = data['status'];
-                      if (status == 'on') {
+                      if (status == true) {
                           console.log(status);
                           image.attr('src', '{{ url_for('static', filename='img/bookmark_1.png') }}');
-                      } else if (status == 'off'){
+                      } else if (status == false){
                           console.log(status);
                           image.attr('src', '{{ url_for('static', filename='img/bookmark_0.png') }}')
                       }

@@ -128,11 +128,11 @@
                   },
                   success: function (data) {
                       let status = data['status'];
-                      if (status == 'on') {
+                      if (status == true) {
                           bookmarks_counter.textContent = parseInt(bookmarks_counter.textContent, 10)+1
                           console.log(status);
                           image.attr('src', '{{ url_for('static', filename='img/bookmark_1.png') }}');
-                      } else if (status == 'off'){
+                      } else if (status == false){
                           bookmarks_counter.textContent = parseInt(bookmarks_counter.textContent, 10)-1
                           console.log(status);
                           image.attr('src', '{{ url_for('static', filename='img/bookmark_0.png') }}')

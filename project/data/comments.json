@@ -118,5 +118,11 @@
         "commenter_name": "hanna",
         "comment": "Очень необычная фоторафия! Где это?",
         "pk": 20
+    },
+    {
+        "post_id": 8,
+        "commenter_name": "John",
+        "comment": "Похож на теодора, Но не он",
+        "pk": 21
     }
 ]

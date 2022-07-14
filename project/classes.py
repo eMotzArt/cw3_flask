@@ -1,15 +1,24 @@
 import json
 import re
 import operator
+from typing import Optional
+
 from werkzeug.datastructures import FileStorage
+
+from json import JSONDecodeError
+from project.exceptions import DataFileError
 
 from project.globals import DATA_PATH_ABS, IMG_PATH_ABS, PROJECT_PATH_ABS
 
 class FileJSONWorker:
     @staticmethod
     def get_file(filename):
-        with open(filename) as file:
-            return json.load(file)
+        try:
+            with open(filename) as file:
+                return json.load(file)
+        except (FileNotFoundError, JSONDecodeError):
+            raise DataFileError(f'Не удалось считать данные из файла')
+
 
     @staticmethod
     def set_file(filename, filecontent):
@@ -30,11 +39,12 @@ class Repository:
         """ Возвращает список словарей (постов) """
         return FileJSONWorker.get_file(self.posts_file)
 
-    def get_post_by_id(self, searched_post_id: int) -> dict:
+    def get_post_by_id(self, searched_post_id: int) -> Optional[dict]:
         all_posts = self.get_all_posts()
         for post in all_posts:
             if post['pk'] == searched_post_id:
                 return post
+
 
     def get_posts_by_search_line(self, search_line: str) -> list[dict]:
         all_posts = self.get_all_posts()
@@ -42,7 +52,9 @@ class Repository:
         for post in all_posts:
             if search_line.lower() in post['content'].lower():
                 founded_posts.append(post)
-        return founded_posts[:10]
+            if len(founded_posts) == 10:
+                break
+        return founded_posts
 
     def get_posts_by_user_name(self, user_name: str) -> list[dict]:
         all_posts = self.get_all_posts()
@@ -59,7 +71,7 @@ class Repository:
         founded_posts = []
         for post in all_posts:
             hashtags_list = post['hashtags']
-            if len(hashtags_list) == 0: continue
+            if not hashtags_list: continue
 
             for hashtag in hashtags_list:
                 if searched_tag == hashtag.strip().lower():
@@ -77,7 +89,7 @@ class Repository:
         return user_bookmarked_posts
 
     def parse_post_hashtags(self, new_post: dict) -> dict:
-        if new_post['content'].count('#') == 0:
+        if not new_post['content'].count('#'):
             new_post['hashtags'] = []
             return new_post
 
@@ -90,7 +102,8 @@ class Repository:
         hashtags_links = []
         for hashtag in hashtags:
             hashtags_links.append(f"<a href='/tag/{hashtag[1:].strip()}'>{hashtag.strip()}</a>")
-            new_post['content'] = new_post['content'].replace(hashtag, f"<a href='/tag/{hashtag[1:].strip()}'>{hashtag.strip()}</a> ", 1)
+            new_post['content'] = \
+                new_post['content'].replace(hashtag, f"<a href='/tag/{hashtag[1:].strip()}'>{hashtag.strip()}</a> ", 1)
         # удаляем пробелы с концов хештегов для феншуя
         hashtags = list(map(lambda x: x.strip(), hashtags))
         # записываем хештеги и ссылки в ключи,

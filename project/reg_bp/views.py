@@ -10,8 +10,7 @@ def page_reg():
     if request.method == 'GET':
         return render_template('reg.html')
 
-    if request.method == 'POST':
-        UserIDentifier().register_new_user(request)
-        return redirect(url_for('main_blueprint.page_index'))
+    UserIDentifier().register_new_user(request)
+    return redirect(url_for('main_blueprint.page_index'))
 
 

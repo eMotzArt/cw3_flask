@@ -1,4 +1,5 @@
 from flask import Flask, send_from_directory, render_template
+import os
 
 from project.main_bp.views import main_blueprint
 from project.reg_bp.views import reg_blueprint
@@ -18,7 +19,6 @@ app.config['UPLOAD_FOLDER'] = IMG_PATH_ABS
 #static route
 @app.route("/static/<path:path>/<path:filename>")
 def static_dir(path, filename):
-    import os
     path_endpoint = os.path.join(path, filename)
     return send_from_directory("project/static", path_endpoint)
 
